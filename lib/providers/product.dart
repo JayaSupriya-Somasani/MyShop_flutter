@@ -8,7 +8,8 @@ class Product with ChangeNotifier {
   final String imageUrl;
   bool isFavorite;
 
-  Product({required this.id,
+  Product({
+    required this.id,
     required this.title,
     required this.description,
     required this.price,

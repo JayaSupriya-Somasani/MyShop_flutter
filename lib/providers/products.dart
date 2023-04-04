@@ -40,9 +40,9 @@ class Products with ChangeNotifier {
   var _showFavOnly = false;
 
   List<Product> get items {
-    if (_showFavOnly) {
-      return _item.where((prodItem) => prodItem.isFavorite).toList();
-    }
+    // if (_showFavOnly) {
+    //   return _item.where((prodItem) => prodItem.isFavorite).toList();
+    // }
     return [..._item];
   }
 

@@ -14,14 +14,14 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  Map<String, CartItem> _items = {};
+  final Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get item {
     return {..._items};
   }
 
   int get itemCount {
-    return _items.length ?? 0;
+    return _items.length;
   }
 
   double get totalAmount {
@@ -51,5 +51,10 @@ class Cart with ChangeNotifier {
               price: price));
       notifyListeners();
     }
+  }
+
+  void removeItem(String productId){
+    _items.remove(productId);
+    notifyListeners();
   }
 }
