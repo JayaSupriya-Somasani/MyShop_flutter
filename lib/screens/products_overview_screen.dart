@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../providers/products.dart';
+import 'package:my_shop/providers/cart.dart';
 import 'package:provider/provider.dart';
 import '../widgets/products_grid.dart';
 
@@ -42,7 +42,17 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 child: Text("Show all"),
               )
             ],
-          )
+          ),
+          Consumer<Cart>(
+            builder: (ctx, cart,ch) => Badge(
+              label:Text(cart.itemCount.toString()),
+              child: ch
+            ),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+          ),
         ],
       ),
       body: ProductsGrid(_showFavOnly),
