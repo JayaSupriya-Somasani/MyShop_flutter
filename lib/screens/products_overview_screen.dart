@@ -42,9 +42,9 @@ class ProductsOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Shop"),
+        title: const Text("My Shop"),
       ),
-      body: GridView.builder(
+      body: GridView.builder(padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 3 / 2,
