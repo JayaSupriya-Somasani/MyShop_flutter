@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/cart.dart';
 import 'package:my_shop/providers/products.dart';
-import 'package:my_shop/screens/product_details_screen.dart';
-import 'package:my_shop/screens/products_overview_screen.dart';
+import 'package:my_shop/screens/cart_screen.dart';
+import './screens/product_details_screen.dart';
+import './screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,12 +24,13 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.deepPurple,
             accentColor: Colors.deepOrange,
             fontFamily: 'Lato'),
         home: ProductsOverviewScreen(),
         routes: {
-          ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen()
+          ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),
+          CartScreen.routeName:(ctx)=>CartScreen()
         },
       ),
     );
