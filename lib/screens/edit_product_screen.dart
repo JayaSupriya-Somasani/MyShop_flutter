@@ -18,7 +18,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imgFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   var _editedProduct =
-      Product(id: '', title: '', description: '', price: 0, imageUrl: '');
+  Product(
+      id: '',
+      title: '',
+      description: '',
+      price: 0,
+      imageUrl: '');
 
   var _initValues = {
     'title': '',
@@ -27,6 +32,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'price': ''
   };
   var _isInit = true;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -37,17 +43,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      final productId = ModalRoute.of(context)?.settings.arguments as String?;
-      if(productId!=null){
+      final productId = ModalRoute
+          .of(context)
+          ?.settings
+          .arguments as String?;
+      if (productId != null) {
         _editedProduct =
             Provider.of<Products>(context, listen: false).findById(productId);
         _initValues = {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
-          'imageUrl':'',
+          'imageUrl': '',
           'price': _editedProduct.price.toString()
         };
-        _imgEditingController.text=_editedProduct.imageUrl;
+        _imgEditingController.text = _editedProduct.imageUrl;
       }
     }
     _isInit = false;
@@ -57,7 +66,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void _updateImageUrl() {
     if (!_imgFocusNode.hasFocus) {
       if ((!_imgEditingController.text.startsWith('http') &&
-              !_imgEditingController.text.startsWith('https')) ||
+          !_imgEditingController.text.startsWith('https')) ||
           (!_imgEditingController.text.endsWith('.jpg') &&
               !_imgEditingController.text.endsWith('.png') &&
               !_imgEditingController.text.endsWith('.jpeg'))) {
@@ -67,23 +76,50 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _formKey.currentState!.validate();
-    final productId = ModalRoute.of(context)?.settings.arguments as String?;
+    final productId = ModalRoute
+        .of(context)
+        ?.settings
+        .arguments as String?;
     if (!isValid) {
       return;
     }
     _formKey.currentState?.save();
-    print("prod id :  ${_editedProduct.id}");
-    if(productId!=null){
-        Provider.of<Products>(context,listen: false).updateProducts(_editedProduct.id, _editedProduct);
+    setState(() {
+      _isLoading = true;
+    });
+    if (productId != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProducts(_editedProduct.id, _editedProduct);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
+    } else {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+       await showDialog(
+            context: context,
+            builder: (ctx) =>
+                AlertDialog(
+                  title: const Text("Error occurred"),
+                  content: const Text("Something went wrong"),
+                  actions: [
+                    TextButton(onPressed: () {
+                      Navigator.of(ctx).pop();
+                    }, child: const Text("Okay"))
+                  ],
+                ));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
+      }
     }
-    else {
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
-    }
-
-    Navigator.of(context).pop();
-
     print("product id ${_editedProduct.id}");
     print("product title ${_editedProduct.title}");
     print("product description ${_editedProduct.description}");
@@ -110,7 +146,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Padding(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
@@ -145,7 +183,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
                 onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                  FocusScope.of(context)
+                      .requestFocus(_descriptionFocusNode);
                 },
                 onSaved: (value) {
                   _editedProduct = Product(
@@ -171,7 +210,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               TextFormField(
                 initialValue: _initValues['description'],
-                decoration: const InputDecoration(labelText: "Description"),
+                decoration:
+                const InputDecoration(labelText: "Description"),
                 textInputAction: TextInputAction.next,
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
@@ -210,15 +250,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: _imgEditingController.text.isEmpty
                         ? const Text("Enter Image Url")
                         : FittedBox(
-                            child: Image.network(
-                              _imgEditingController.text,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                      child: Image.network(
+                        _imgEditingController.text,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                   Expanded(
                     child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'ImageUrl'),
+                      decoration:
+                      const InputDecoration(labelText: 'ImageUrl'),
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       controller: _imgEditingController,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/cart.dart';
+import 'package:my_shop/providers/products.dart';
 import 'package:my_shop/screens/cart_screen.dart';
 import 'package:my_shop/widgets/app_drawer.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,17 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showFavOnly = false;
+  var _isInt = true;
+  var _isLoading=false;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInt) {
+      Provider.of<Products>(context).fetchAndSetProducts();
+    }
+    _isInt = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +59,17 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ],
           ),
           Consumer<Cart>(
-            builder: (ctx, cart,ch){ return Badges(
-              value: cart.itemCount.toString(),
-              color: Colors.black54,
-              child: IconButton(
-                icon: Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-              )
-            );},
+            builder: (ctx, cart, ch) {
+              return Badges(
+                  value: cart.itemCount.toString(),
+                  color: Colors.black54,
+                  child: IconButton(
+                    icon: Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(CartScreen.routeName);
+                    },
+                  ));
+            },
           ),
         ],
       ),
