@@ -8,6 +8,7 @@ import 'package:my_shop/screens/auth_screen.dart';
 import 'package:my_shop/screens/cart_screen.dart';
 import 'package:my_shop/screens/edit_product_screen.dart';
 import 'package:my_shop/screens/orders_screen.dart';
+import 'package:my_shop/screens/splash_screen.dart';
 import 'package:my_shop/screens/user_product_screen.dart';
 import './screens/product_details_screen.dart';
 import './screens/products_overview_screen.dart';
@@ -26,14 +27,14 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (ctx) => Auth()),
           ChangeNotifierProxyProvider<Auth, Products>(
-              create: (ctx) =>Products("","", [],),
+              create: (ctx) =>Products('',"", [],),
               update: (ctx, auth, prevProducts) =>
-                  Products(auth.token ?? '', auth.userId,(prevProducts==null)?[]:prevProducts.items)),
+                  Products(auth.token ?? '', auth.userId!,(prevProducts==null)?[]:prevProducts.items)),
           ChangeNotifierProvider(create: (ctx) => Cart()),
           ChangeNotifierProxyProvider<Auth, Orders>(
             create: (ctx) =>Orders("","" ,[]),
             update: (ctx, auth, previousOrders) => Orders(
-              auth.token??'',auth.userId,
+              auth.token??'',auth.userId!,
               previousOrders == null ? [] : previousOrders.orders,
             ),
           ),
@@ -48,7 +49,16 @@ class MyApp extends StatelessWidget {
                     primarySwatch: Colors.deepPurple,
                     accentColor: Colors.deepOrange,
                     fontFamily: 'Lato'),
-                home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+                home: auth.isAuth
+                    ? ProductsOverviewScreen()
+                    : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                  authResultSnapshot.connectionState ==
+                      ConnectionState.waiting
+                      ? SplashScreen()
+                      : AuthScreen(),
+                ),
                 routes: {
                   ProductDetailsScreen.routeName: (ctx) =>
                       ProductDetailsScreen(),
