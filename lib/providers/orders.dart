@@ -23,6 +23,8 @@ class Orders with ChangeNotifier {
   List<OrderItem> get orders {
     return [..._orders];
   }
+  final String authToken;
+  Orders(this.authToken, this._orders);
 
   Future<void> fetchAndSetOrders() async {
     const url =
