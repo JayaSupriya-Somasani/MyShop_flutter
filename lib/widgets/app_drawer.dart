@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/helpers/custom_route.dart';
 import 'package:my_shop/providers/auth.dart';
 import 'package:my_shop/screens/edit_product_screen.dart';
 import 'package:my_shop/screens/orders_screen.dart';
@@ -6,8 +7,6 @@ import 'package:my_shop/screens/user_product_screen.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -24,17 +23,21 @@ class AppDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.payment),
-            title: const Text("Orders"),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(OrdersScreen.routeName),
+              leading: const Icon(Icons.payment),
+              title: const Text("Orders"),
+              onTap: () {
+                // Navigator.of(context).pushReplacement(CustomRoute(
+                //     builder: (ctx) => OrdersScreen(), routeSettings: RouteSettings));
+                Navigator.of(context).pushReplacementNamed(OrdersScreen.routeName);
+              }
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.payment),
             title: const Text("Manage Products"),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(UserProductScreen.routeName),
+            onTap: () =>
+                Navigator.of(context)
+                    .pushReplacementNamed(UserProductScreen.routeName),
           ),
           const Divider(),
           ListTile(
@@ -50,4 +53,6 @@ class AppDrawer extends StatelessWidget {
       ),
     );
   }
+
+  const AppDrawer({Key? key}) : super(key: key);
 }
