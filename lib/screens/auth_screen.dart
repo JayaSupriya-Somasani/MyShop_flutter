@@ -96,10 +96,7 @@ class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
-  Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-  };
+  Map<String, String> _authData = {'email': '', 'password': '',};
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
@@ -219,7 +216,7 @@ class _AuthCardState extends State<AuthCard>
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
         child: Form(
           key: _formKey,
@@ -254,7 +251,7 @@ class _AuthCardState extends State<AuthCard>
                   },
                 ),
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   constraints: BoxConstraints(
                       minHeight: _authMode == AuthMode.Signup ? 60 : 0,
                       maxHeight: _authMode == AuthMode.Signup ? 120 : 0),
@@ -304,7 +301,7 @@ class _AuthCardState extends State<AuthCard>
                   onPressed: _switchAuthMode,
                   child: Padding(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                     child: Text(
                       '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
                       style: TextStyle(color: Theme.of(context).primaryColor),
